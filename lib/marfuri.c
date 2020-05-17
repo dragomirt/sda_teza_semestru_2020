@@ -133,7 +133,6 @@ void sterge(struct Node** head, marfa_t data)
     else
         printf("Intrarea nu a fost gasita!");
 }
-
 void curataLista(struct Node** head_ref) {
     struct Node* current = *head_ref;
     struct Node* next;
@@ -147,7 +146,6 @@ void curataLista(struct Node** head_ref) {
 
     *head_ref = NULL;
 }
-
 void traversarea(struct Node *last)
 {
     struct Node *p;
@@ -231,16 +229,19 @@ void exportToFile(FILE *fp, struct Node *last) {
     while(p != last->next);
 }
 
-void readFile(FILE *fp, struct Node *p) {
+struct Node *readFile(FILE *fp) {
     marfa_t mo; // Marfa Object
+    struct Node *p = NULL;
 
     // Citirea fisierului
     do
     {
         fscanf(fp, "%d %s %s %s %s %s %f\n", &mo.cod, mo.denumire, mo.articol, mo.model, mo.marime, mo.calitate, &mo.pret);
-        adaugaLaInceput(p, mo);
+        p = adaugaLaInceput(p, mo);
     }
     while(!feof(fp));
+
+    return p;
 }
 
 // Metode de manipulare a fisierelor
@@ -251,31 +252,29 @@ void creareFisier(char path[], struct Node *last) {
     fclose(fp);
 }
 
-void citireFisier(char path[], struct Node *last) {
+void citireFisier(char path[], struct Node **last) {
     FILE *fp;
-    struct Node *p = NULL;
-
     fp = fopen(path, "r");
-    readFile(fp, last);
+    *last = readFile(fp);
     fclose(fp);
 }
 
 void hello(void) {
     struct Node *last = NULL;
-    marfa_t marfa_test = {"test", "articol_1", "model_1", "L", "buna", 10.2, 1};
-    marfa_t marfa_test_1 = {"test1", "articol_2", "model_2", "L", "asdf", 6.23, 2};
-    marfa_t marfa_test_2 = {"test2", "articol_3", "model_3", "L", "asdf", 8.23, 3};
-
-    last = adaugaListaPustie(last, marfa_test);
-    last = adaugaLaInceput(last, marfa_test_1);
-    last = adaugaLaSfarsit(last, marfa_test_2);
-
-    creareFisier("testdata.txt", last);
+//    marfa_t marfa_test = {"test", "articol_1", "model_1", "L", "buna", 10.2, 1};
+//    marfa_t marfa_test_1 = {"test1", "articol_2", "model_2", "L", "asdf", 6.23, 2};
+//    marfa_t marfa_test_2 = {"test2", "articol_3", "model_3", "L", "asdf", 8.23, 3};
+//
+//    last = adaugaListaPustie(last, marfa_test);
+//    last = adaugaLaInceput(last, marfa_test_1);
+//    last = adaugaLaSfarsit(last, marfa_test_2);
+//
+//    creareFisier("testdata.txt", last);
 //    sterge(&last, marfa_test_1);
-    traversarea(last);
+//    traversarea(last);
 
     printf("\n______\n");
     curataLista(&last);
-    citireFisier("testdata.txt", last);
+    citireFisier("testdata.txt", &last);
     traversarea(last);
 }
