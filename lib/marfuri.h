@@ -1,0 +1,6 @@
+#ifndef TEZA_SEMESTRU_SDA_MARFURI_H
+#define TEZA_SEMESTRU_SDA_MARFURI_H
+
+void hello(void);
+
+#endif //TEZA_SEMESTRU_SDA_MARFURI_H

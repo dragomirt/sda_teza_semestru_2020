@@ -1,6 +1,0 @@
-#ifndef TEZA_SEMESTRU_SDA_LIBRARY_H
-#define TEZA_SEMESTRU_SDA_LIBRARY_H
-
-void hello(void);
-
-#endif //TEZA_SEMESTRU_SDA_LIBRARY_H
