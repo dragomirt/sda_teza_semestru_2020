@@ -1,7 +1,7 @@
 #include "marfuri.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <db.h>
+#include <string.h>
 
 #define MAX_STRING_SIZE 200
 
@@ -148,7 +148,7 @@ void curataLista(struct Node** head_ref) {
 }
 void traversarea(struct Node *last)
 {
-    struct Node *p;
+    struct Node *p = NULL;
 
     // Daca lista este pustie, intoarce
     if (last == NULL)
@@ -158,16 +158,13 @@ void traversarea(struct Node *last)
     }
 
     // Selectia primului nod
-    p = last -> next;
+    p = last;
 
     // Traversarea listei
-    do
-    {
-        printf("%s ", p->data.denumire);
+    do {
+        printf("%d | %s\n", p->data.cod, p->data.denumire);
         p = p -> next;
-
-    }
-    while(p != last->next);
+    } while(p != last);
 }
 
 // Exportul / importul datelor
@@ -218,17 +215,15 @@ void exportToFile(FILE *fp, struct Node *last) {
     }
 
     // Selectia primului nod
-    p = last -> next;
+    p = last;
 
     // Traversarea listei
     do
     {
         fprintf(fp, "%d %s %s %s %s %s %f\n", p->data.cod, p->data.denumire, p->data.articol, p->data.model, p->data.marime, p->data.calitate, p->data.pret);
         p = p -> next;
-    }
-    while(p != last->next);
+    } while(p != last);
 }
-
 struct Node *readFile(FILE *fp) {
     marfa_t mo; // Marfa Object
     struct Node *p = NULL;
@@ -251,12 +246,80 @@ void creareFisier(char path[], struct Node *last) {
     exportToFile(fp, last);
     fclose(fp);
 }
-
 void citireFisier(char path[], struct Node **last) {
     FILE *fp;
     fp = fopen(path, "r");
     *last = readFile(fp);
     fclose(fp);
+}
+
+// Metode ajutatoare
+void swap(struct Node *a, struct Node *b)
+{
+    marfa_t temp = a->data;
+    a->data = b->data;
+    b->data = temp;
+}
+// Sparge lista circulara in lista liniara
+struct Node *breakTheCircle(struct Node *last) {
+    struct Node *start = last;
+
+    if (last == NULL) {
+        return last;
+    }
+
+    while(last->next != start) {
+        last = last->next;
+    }
+
+    last->next = NULL;
+    return start;
+}
+// Re-strange lista liniara in una circulara
+struct Node *reAssembleTheCircle(struct Node *last) {
+    struct Node *start = last;
+
+    if (last == NULL) {
+        return last;
+    }
+
+    while(last->next != NULL) {
+        last = last->next;
+    }
+
+    last->next = start;
+
+    return start;
+}
+
+// Manipularea datelor ( sortare / cautare )
+void bubbleSort(struct Node *start)
+{
+    int swapped, i;
+    struct Node *ptr1;
+    struct Node *lptr = NULL;
+
+    /* Checking for empty list */
+    if (start == NULL)
+        return;
+
+    do
+    {
+        swapped = 0;
+        ptr1 = start;
+
+        while (ptr1->next != lptr)
+        {
+            if (ptr1->data.cod > ptr1->next->data.cod)
+            {
+                swap(ptr1, ptr1->next);
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    }
+    while (swapped);
 }
 
 void hello(void) {
@@ -275,6 +338,13 @@ void hello(void) {
 
     printf("\n______\n");
     curataLista(&last);
+
+    struct Node *temp = NULL;
     citireFisier("testdata.txt", &last);
+    temp = breakTheCircle(last);
+    bubbleSort(temp);
+    last = reAssembleTheCircle(temp);
+
+    creareFisier("testdata.txt", last);
     traversarea(last);
 }
