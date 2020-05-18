@@ -293,7 +293,11 @@ struct Node *reAssembleTheCircle(struct Node *last) {
 }
 
 // Manipularea datelor ( sortare / cautare )
-void bubbleSort(struct Node **start, int type)
+// In dependenta de valoarea variabilei type se iau diferiti parametri de comparatie
+// 0 = se compara dupa cod
+// 1 = se compara dupa denumire
+// 2 = se compara dupa articol
+void sort(struct Node **start, int type)
 {
     int swapped, i;
     struct Node *ptr1;
@@ -351,7 +355,7 @@ void hello(void) {
     struct Node *last = NULL;
 
     citireFisier("testdata.txt", &last);
-    bubbleSort(&last, 1);
+    sort(&last, 2);
 
     creareFisier("testdata.txt", last);
     traversarea(last);
