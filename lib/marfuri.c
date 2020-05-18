@@ -293,7 +293,7 @@ struct Node *reAssembleTheCircle(struct Node *last) {
 }
 
 // Manipularea datelor ( sortare / cautare )
-void bubbleSort(struct Node *start, int type)
+void bubbleSort(struct Node **start, int type)
 {
     int swapped, i;
     struct Node *ptr1;
@@ -303,10 +303,13 @@ void bubbleSort(struct Node *start, int type)
     if (start == NULL)
         return;
 
+    struct Node *temp = NULL;
+    temp = breakTheCircle(*start);
+
     do
     {
         swapped = 0;
-        ptr1 = start;
+        ptr1 = *start;
 
         while (ptr1->next != lptr)
         {
@@ -340,16 +343,15 @@ void bubbleSort(struct Node *start, int type)
         lptr = ptr1;
     }
     while (swapped);
+
+    *start = reAssembleTheCircle(temp);
 }
 
 void hello(void) {
     struct Node *last = NULL;
-    struct Node *temp = NULL;
 
     citireFisier("testdata.txt", &last);
-    temp = breakTheCircle(last);
-    bubbleSort(temp, 2);
-    last = reAssembleTheCircle(temp);
+    bubbleSort(&last, 1);
 
     creareFisier("testdata.txt", last);
     traversarea(last);
