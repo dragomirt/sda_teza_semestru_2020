@@ -293,7 +293,7 @@ struct Node *reAssembleTheCircle(struct Node *last) {
 }
 
 // Manipularea datelor ( sortare / cautare )
-void bubbleSort(struct Node *start)
+void bubbleSort(struct Node *start, int type)
 {
     int swapped, i;
     struct Node *ptr1;
@@ -310,11 +310,31 @@ void bubbleSort(struct Node *start)
 
         while (ptr1->next != lptr)
         {
-            if (ptr1->data.cod > ptr1->next->data.cod)
-            {
-                swap(ptr1, ptr1->next);
-                swapped = 1;
+            switch (type) {
+                case 1:
+                    if (strcmp(ptr1->data.denumire, ptr1->next->data.denumire) > 0)
+                    {
+                        swap(ptr1, ptr1->next);
+                        swapped = 1;
+                    }
+                    break;
+
+                case 2:
+                    if (strcmp(ptr1->data.model, ptr1->next->data.model) > 0)
+                    {
+                        swap(ptr1, ptr1->next);
+                        swapped = 1;
+                    }
+                    break;
+
+                default:
+                    if (ptr1->data.cod > ptr1->next->data.cod)
+                    {
+                        swap(ptr1, ptr1->next);
+                        swapped = 1;
+                    }
             }
+
             ptr1 = ptr1->next;
         }
         lptr = ptr1;
@@ -324,25 +344,11 @@ void bubbleSort(struct Node *start)
 
 void hello(void) {
     struct Node *last = NULL;
-//    marfa_t marfa_test = {"test", "articol_1", "model_1", "L", "buna", 10.2, 1};
-//    marfa_t marfa_test_1 = {"test1", "articol_2", "model_2", "L", "asdf", 6.23, 2};
-//    marfa_t marfa_test_2 = {"test2", "articol_3", "model_3", "L", "asdf", 8.23, 3};
-//
-//    last = adaugaListaPustie(last, marfa_test);
-//    last = adaugaLaInceput(last, marfa_test_1);
-//    last = adaugaLaSfarsit(last, marfa_test_2);
-//
-//    creareFisier("testdata.txt", last);
-//    sterge(&last, marfa_test_1);
-//    traversarea(last);
-
-    printf("\n______\n");
-    curataLista(&last);
-
     struct Node *temp = NULL;
+
     citireFisier("testdata.txt", &last);
     temp = breakTheCircle(last);
-    bubbleSort(temp);
+    bubbleSort(temp, 2);
     last = reAssembleTheCircle(temp);
 
     creareFisier("testdata.txt", last);
