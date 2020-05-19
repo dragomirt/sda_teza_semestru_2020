@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define MAX_STRING_SIZE 200
+#define REGISTER_NAME "path_register.txt"
 
 struct MARFURI_TEXTILE {
     char denumire[MAX_STRING_SIZE];
@@ -240,13 +241,13 @@ struct Node *readFile(FILE *fp) {
 }
 
 // Metode de manipulare a fisierelor
-void creareFisier(char path[], struct Node *last) {
+void creareFisier(const char path[], struct Node *last) {
     FILE *fp;
     fp = fopen(path, "w+");
     exportToFile(fp, last);
     fclose(fp);
 }
-void citireFisier(char path[], struct Node **last) {
+void citireFisier(const char path[], struct Node **last) {
     FILE *fp;
     fp = fopen(path, "r");
     *last = readFile(fp);
@@ -355,7 +356,7 @@ void sort(struct Node **start, int type)
 }
 
 // Searching
-struct Node *searchByCode(struct Node *last, const int code) {
+struct Node *searchByCode(const struct Node *last, const int code) {
 
     struct Node *p = NULL;
 
@@ -379,7 +380,7 @@ struct Node *searchByCode(struct Node *last, const int code) {
 
     return NULL;
 }
-struct Node *searchByDenumire(struct Node *last, const char denumire[]) {
+struct Node *searchByDenumire(const struct Node *last, const char denumire[]) {
 
     struct Node *p = NULL;
 
@@ -404,6 +405,73 @@ struct Node *searchByDenumire(struct Node *last, const char denumire[]) {
     return NULL;
 }
 
+// File showcase
+void createRegisterFile() {
+    FILE *fp;
+    fp = fopen(REGISTER_NAME, "a");
+    fclose(fp);
+}
+int checkIfInRegister(const char path[]) {
+    FILE *fp;
+    fp = fopen(REGISTER_NAME, "r");
+    char file_name[MAX_STRING_SIZE];
+
+    do
+    {
+        fscanf(fp, "%s\n", file_name);
+        if (!strcmp(file_name, path)) {
+            fclose(fp);
+
+            return 1;
+        }
+    }
+    while(!feof(fp));
+
+    fclose(fp);
+    return 0;
+}
+void addToRegister(const char path[]) {
+    if (!checkIfInRegister(path)) {
+        FILE *fp;
+        fp = fopen(REGISTER_NAME, "a+");
+        fprintf(fp, "%s\n", path);
+        fclose(fp);
+    }
+}
+void removeFromRegister(const char path[]) {
+    if (checkIfInRegister(path)) {
+        FILE *fp, *temp;
+        char data[MAX_STRING_SIZE];
+        fp = fopen(REGISTER_NAME, "r");
+        temp = fopen("temp.txt", "w+");
+
+        do
+        {
+            fscanf(fp, "%s\n", data);
+
+            if (strcmp(data, path) != 0) {
+                fprintf(temp, "%s\n", data);
+            }
+        }
+        while(!feof(fp));
+
+        fclose(fp);
+        fp = fopen(REGISTER_NAME, "w");
+
+        do
+        {
+            fscanf(temp, "%s\n", data);
+            fprintf(fp, "%s\n", data);
+        }
+        while(!feof(temp));
+
+        fclose(temp);
+        fclose(fp);
+
+        remove("temp.txt");
+    }
+}
+
 void hello(void) {
     struct Node *last = NULL;
 
@@ -416,5 +484,12 @@ void hello(void) {
     if (p) {
         printf("%d", p->data.cod);
     }
+
+    createRegisterFile();
+    addToRegister("testdata.txt");
+    addToRegister("asdf.txt");
+
+//    removeFromRegister("testdata.txt");
+
     traversarea(last);
 }
