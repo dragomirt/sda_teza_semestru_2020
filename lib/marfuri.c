@@ -240,17 +240,119 @@ struct Node *readFile(FILE *fp) {
     return p;
 }
 
+// Metode de stocare a datelor despre fisiere
+void createRegisterFile() {
+    FILE *fp;
+    fp = fopen(REGISTER_NAME, "a");
+    fclose(fp);
+}
+int checkIfInRegister(const char path[]) {
+    FILE *fp;
+    fp = fopen(REGISTER_NAME, "r");
+    char file_name[MAX_STRING_SIZE];
+
+    do
+    {
+        fscanf(fp, "%s\n", file_name);
+        if (!strcmp(file_name, path)) {
+            fclose(fp);
+
+            return 1;
+        }
+    }
+    while(!feof(fp));
+
+    fclose(fp);
+    return 0;
+}
+void addToRegister(const char path[]) {
+    if (!checkIfInRegister(path)) {
+        FILE *fp;
+        fp = fopen(REGISTER_NAME, "a+");
+        fprintf(fp, "%s\n", path);
+        fclose(fp);
+    }
+}
+void removeFromRegister(const char path[]) {
+    if (checkIfInRegister(path)) {
+        FILE *fp, *temp;
+        char data[MAX_STRING_SIZE];
+        fp = fopen(REGISTER_NAME, "r");
+        temp = fopen("temp.txt", "w+");
+
+        do
+        {
+            fscanf(fp, "%s\n", data);
+
+            if (strcmp(data, path) != 0) {
+                fprintf(temp, "%s\n", data);
+            }
+        }
+        while(!feof(fp));
+
+        fclose(fp);
+        fp = fopen(REGISTER_NAME, "w");
+
+        do
+        {
+            fscanf(temp, "%s\n", data);
+            fprintf(fp, "%s\n", data);
+        }
+        while(!feof(temp));
+
+        fclose(temp);
+        fclose(fp);
+
+        remove("temp.txt");
+    }
+}
+void printRegisteredFiles() {
+    FILE *fp;
+    fp = fopen(REGISTER_NAME, "r");
+    char file_name[MAX_STRING_SIZE];
+
+    do
+    {
+        fscanf(fp, "%s\n", file_name);
+        printf("%s\n", file_name);
+    }
+    while(!feof(fp));
+
+    fclose(fp);
+}
+
 // Metode de manipulare a fisierelor
 void creareFisier(const char path[], struct Node *last) {
     FILE *fp;
     fp = fopen(path, "w+");
     exportToFile(fp, last);
     fclose(fp);
+
+    createRegisterFile();
+    addToRegister(path);
 }
 void citireFisier(const char path[], struct Node **last) {
     FILE *fp;
     fp = fopen(path, "r");
     *last = readFile(fp);
+    fclose(fp);
+}
+void readFileFromRegister(struct Node** last, int register_index) {
+    FILE *fp;
+    fp = fopen(REGISTER_NAME, "r");
+    char file_name[MAX_STRING_SIZE];
+    int counter = 0;
+
+    do
+    {
+        if (counter == register_index) {
+            fscanf(fp, "%s\n", file_name);
+            citireFisier(file_name, last);
+            break;
+        }
+    }
+    while(!feof(fp));
+
     fclose(fp);
 }
 
@@ -405,73 +507,6 @@ struct Node *searchByDenumire(const struct Node *last, const char denumire[]) {
     return NULL;
 }
 
-// File showcase
-void createRegisterFile() {
-    FILE *fp;
-    fp = fopen(REGISTER_NAME, "a");
-    fclose(fp);
-}
-int checkIfInRegister(const char path[]) {
-    FILE *fp;
-    fp = fopen(REGISTER_NAME, "r");
-    char file_name[MAX_STRING_SIZE];
-
-    do
-    {
-        fscanf(fp, "%s\n", file_name);
-        if (!strcmp(file_name, path)) {
-            fclose(fp);
-
-            return 1;
-        }
-    }
-    while(!feof(fp));
-
-    fclose(fp);
-    return 0;
-}
-void addToRegister(const char path[]) {
-    if (!checkIfInRegister(path)) {
-        FILE *fp;
-        fp = fopen(REGISTER_NAME, "a+");
-        fprintf(fp, "%s\n", path);
-        fclose(fp);
-    }
-}
-void removeFromRegister(const char path[]) {
-    if (checkIfInRegister(path)) {
-        FILE *fp, *temp;
-        char data[MAX_STRING_SIZE];
-        fp = fopen(REGISTER_NAME, "r");
-        temp = fopen("temp.txt", "w+");
-
-        do
-        {
-            fscanf(fp, "%s\n", data);
-
-            if (strcmp(data, path) != 0) {
-                fprintf(temp, "%s\n", data);
-            }
-        }
-        while(!feof(fp));
-
-        fclose(fp);
-        fp = fopen(REGISTER_NAME, "w");
-
-        do
-        {
-            fscanf(temp, "%s\n", data);
-            fprintf(fp, "%s\n", data);
-        }
-        while(!feof(temp));
-
-        fclose(temp);
-        fclose(fp);
-
-        remove("temp.txt");
-    }
-}
-
 void hello(void) {
     struct Node *last = NULL;
 
@@ -484,12 +519,6 @@ void hello(void) {
     if (p) {
         printf("%d", p->data.cod);
     }
-
-    createRegisterFile();
-    addToRegister("testdata.txt");
-    addToRegister("asdf.txt");
-
-//    removeFromRegister("testdata.txt");
 
     traversarea(last);
 }
