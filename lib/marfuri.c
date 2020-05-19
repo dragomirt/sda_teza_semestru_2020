@@ -254,12 +254,14 @@ void citireFisier(char path[], struct Node **last) {
 }
 
 // Metode ajutatoare
+// Schimbarea cu locul a datelor din nodurile listei
 void swap(struct Node *a, struct Node *b)
 {
     marfa_t temp = a->data;
     a->data = b->data;
     b->data = temp;
 }
+
 // Sparge lista circulara in lista liniara
 struct Node *breakTheCircle(struct Node *last) {
     struct Node *start = last;
@@ -275,6 +277,7 @@ struct Node *breakTheCircle(struct Node *last) {
     last->next = NULL;
     return start;
 }
+
 // Re-strange lista liniara in una circulara
 struct Node *reAssembleTheCircle(struct Node *last) {
     struct Node *start = last;
@@ -351,6 +354,56 @@ void sort(struct Node **start, int type)
     *start = reAssembleTheCircle(temp);
 }
 
+// Searching
+struct Node *searchByCode(struct Node *last, const int code) {
+
+    struct Node *p = NULL;
+
+    // Daca lista este pustie, intoarce
+    if (last == NULL)
+    {
+        printf("List is empty.\n");
+        return NULL;
+    }
+
+    // Selectia primului nod
+    p = last;
+
+    // Traversarea listei
+    do {
+        if (p->data.cod == code) {
+            return p;
+        }
+        p = p -> next;
+    } while(p != last);
+
+    return NULL;
+}
+struct Node *searchByDenumire(struct Node *last, const char denumire[]) {
+
+    struct Node *p = NULL;
+
+    // Daca lista este pustie, intoarce
+    if (last == NULL)
+    {
+        printf("List is empty.\n");
+        return NULL;
+    }
+
+    // Selectia primului nod
+    p = last;
+
+    // Traversarea listei
+    do {
+        if (!strcmp(p->data.denumire,denumire)) {
+            return p;
+        }
+        p = p -> next;
+    } while(p != last);
+
+    return NULL;
+}
+
 void hello(void) {
     struct Node *last = NULL;
 
@@ -358,5 +411,10 @@ void hello(void) {
     sort(&last, 2);
 
     creareFisier("testdata.txt", last);
+
+    struct Node *p = searchByDenumire(last, "dhdf1");
+    if (p) {
+        printf("%d", p->data.cod);
+    }
     traversarea(last);
 }
