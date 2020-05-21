@@ -3,25 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_STRING_SIZE 200
 #define REGISTER_NAME "path_register.txt"
-
-struct MARFURI_TEXTILE {
-    char denumire[MAX_STRING_SIZE];
-    char articol[MAX_STRING_SIZE];
-    char model[MAX_STRING_SIZE];
-    char marime[MAX_STRING_SIZE];
-    char calitate[MAX_STRING_SIZE];
-    float pret;
-    int cod;
-};
-
-typedef struct MARFURI_TEXTILE marfa_t;
-
-struct Node {
-    marfa_t data;
-    struct Node *next;
-};
 
 // Metode de manipulare a listei
 struct Node *adaugaListaPustie(struct Node *last, marfa_t data)
@@ -97,6 +79,27 @@ struct Node *adaugaDupa(struct Node *last, marfa_t data, marfa_t item)
 
     printf("Intrarea nu a fost gasita!");
     return last;
+}
+struct Node *ultimulElement(struct Node *last)
+{
+    struct Node *p = NULL;
+
+    // Daca lista este pustie, intoarce
+    if (last == NULL)
+    {
+        printf("Lista e pustie.\n");
+        return last;
+    }
+
+    // Selectia primului nod
+    p = last;
+
+    // Traversarea listei
+    do {
+        p = p -> next;
+    } while(p->next != last);
+
+    return p;
 }
 void sterge(struct Node** head, marfa_t data)
 {
@@ -508,6 +511,17 @@ struct Node *searchByDenumire(const struct Node *last, const char denumire[]) {
     } while(p != last);
 
     return NULL;
+}
+
+// Gaseste ultimul cod din fisier
+int getLastIndex(const char path[]) {
+    struct Node *last = NULL;
+
+    citireFisier(path, &last);
+    sort(&last, 0);
+    printf("Ultimul element: %d\n", ultimulElement(last)->data.cod);
+
+    return ultimulElement(last)->data.cod;
 }
 
 void hello(void) {

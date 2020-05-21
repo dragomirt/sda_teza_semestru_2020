@@ -14,8 +14,29 @@ char* citireInformatieDinFisier(struct Node** last) {
     return readFileFromRegister(last, index);
 }
 
-void adaugareInFisier(char path[]) {
+void adaugareInFisier(const char path[]) {
+    marfa_t marfa_test;
+    struct Node* last = NULL;
 
+    printf("——————————————————");
+    printf("\nInstanta noua de marfa textila:");
+    printf("\nDenumire: "); scanf("%s", marfa_test.denumire);
+    printf("Articol: "); scanf("%s", marfa_test.articol);
+    printf("Model: "); scanf("%s", marfa_test.model);
+    printf("Marime: "); scanf("%s", marfa_test.marime);
+    printf("Calitate: "); scanf("%s", marfa_test.calitate);
+    printf("Pret: "); scanf("%f", &marfa_test.pret);
+
+    // Incrementarea ultimului index gasit in fisier:
+    marfa_test.cod = getLastIndex(path) + 1;
+
+    citireFisier(path, &last);
+    adaugaLaInceput(last, marfa_test);
+    sort(&last, 0);
+    creareFisier(path, last);
+
+    printf("\nInstanta cu codul %d si numele %s a fost inserat cu succes in fisierul %s!\n", marfa_test.cod, marfa_test.denumire, path);
+    printf("——————————————————");
 }
 
 int main() {
@@ -24,7 +45,7 @@ int main() {
     char fisier_activ[MAX_STRING_SIZE];
 
     // Meniu
-    char input_value;
+    int input_value;
     int loop_is_running = 1;
 
     while(loop_is_running) {
@@ -34,14 +55,14 @@ int main() {
         printf(""
                "\n1) Afiseaza Fisiere"
                "\n2) Adaugarea in Fisier"
-               "\nq) Iesire din program"
+               "\n0) Iesire din program"
                "\nNavigati: ");
 
         // Citeste primul caracter si sterge cel de-al doilea, pentru a preveni repetarea introducerii
-        scanf("%c%*c", &input_value);
+        scanf("%d", &input_value);
 
         switch (input_value) {
-            case '1':
+            case 1:
                 if (printRegisteredFiles() > 0) {
                     strcpy(fisier_activ, citireInformatieDinFisier(&last));
                 } else {
@@ -49,16 +70,16 @@ int main() {
                 }
                 break;
 
-            case '2':
-
+            case 2:
+                adaugareInFisier(fisier_activ);
                 break;
 
-            case '0':
+            case 0:
                 loop_is_running = 0;
                 break;
 
             default:
-                printf("huh");
+                printf("\n Selectie invalida!");
                 break;
         }
     }
