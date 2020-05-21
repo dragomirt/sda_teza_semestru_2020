@@ -28,6 +28,9 @@ void traversarea(struct Node *last);
 void afisareaDatelor(const marfa_t data);
 
 void exportToJSON(struct Node *last);
+void createRegisterFile();
+void addToRegister(const char path[]);
+void removeFromRegister(const char path[]);
 
 int printRegisteredFiles();
 void creareFisier(const char path[], struct Node *last);

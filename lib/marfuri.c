@@ -345,7 +345,7 @@ void creareFisier(const char path[], struct Node *last) {
 }
 void citireFisier(const char path[], struct Node **last) {
     FILE *fp;
-    fp = fopen(path, "r");
+    fp = fopen(path, "a+");
     *last = readFile(fp);
     fclose(fp);
 }
@@ -357,11 +357,12 @@ char* readFileFromRegister(struct Node** last, int register_index) {
 
     do
     {
+        fscanf(fp, "%s\n", file_name);
         if (counter == register_index) {
-            fscanf(fp, "%s\n", file_name);
             citireFisier(file_name, last);
             break;
         }
+        counter++;
     }
     while(!feof(fp));
 
@@ -526,9 +527,11 @@ int getLastIndex(const char path[]) {
 
     citireFisier(path, &last);
     sort(&last, 0);
-    printf("Ultimul element: %d\n", ultimulElement(last)->data.cod);
+    if (ultimulElement(last) != NULL) {
+        return ultimulElement(last)->data.cod;
+    }
 
-    return ultimulElement(last)->data.cod;
+    return -1;
 }
 
 void hello(void) {

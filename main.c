@@ -44,7 +44,6 @@ int checkIfFileIsActive(const char path[]) {
 
     return 1;
 }
-
 void cautareInFisier(const char path[]) {
     int index = 0;
     int code = 0;
@@ -85,6 +84,20 @@ void cautareInFisier(const char path[]) {
             break;
     }
 }
+char* creareFisierNou() {
+    char nume_fisier[MAX_STRING_SIZE];
+    printf("\nDenumire fisier (calea absoluta):");
+    scanf("%s", nume_fisier);
+
+    if (strcmp(nume_fisier, "") > 0) {
+        createRegisterFile();
+        addToRegister(nume_fisier);
+        return nume_fisier;
+    }
+
+    printf("Introduceti denumirea fisierului!");
+    return "";
+}
 
 int main() {
     // Datele initiale
@@ -118,6 +131,10 @@ int main() {
                 } else {
                     printf("Inca nu exista fisiere cu date!\n");
                 }
+                break;
+
+            case 2:
+                strcpy(fisier_activ, creareFisierNou());
                 break;
 
             case 3:
