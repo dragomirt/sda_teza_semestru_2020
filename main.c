@@ -35,8 +35,16 @@ void adaugareInFisier(const char path[]) {
     sort(&last, 0);
     creareFisier(path, last);
 
-    printf("\nInstanta cu codul %d si numele %s a fost inserat cu succes in fisierul %s!\n", marfa_test.cod, marfa_test.denumire, path);
+    printf("\nInstanta cu codul %d si numele \"%s\" a fost inserat cu succes in fisierul \"%s\"!\n", marfa_test.cod, marfa_test.denumire, path);
     printf("——————————————————");
+}
+
+int checkIfFileIsActive(const char path[]) {
+    if (!strcmp(path, "")) {
+        return 0;
+    }
+
+    return 1;
 }
 
 int main() {
@@ -53,8 +61,10 @@ int main() {
         printf("\n\nFisier Activ: %s\n", fisier_activ);
 
         printf(""
-               "\n1) Afiseaza Fisiere"
-               "\n2) Adaugarea in Fisier"
+               "\n1) Selectare fisier activ"
+               "\n2) Crearea fisier"
+               "\n3) Adaugarea in fisierul activ"
+               "\n-2) BONUS: Exportarea in JSON"
                "\n0) Iesire din program"
                "\nNavigati: ");
 
@@ -66,16 +76,24 @@ int main() {
                 if (printRegisteredFiles() > 0) {
                     strcpy(fisier_activ, citireInformatieDinFisier(&last));
                 } else {
-                    printf("Inca exista fisiere cu date!\n");
+                    printf("Inca nu exista fisiere cu date!\n");
                 }
                 break;
 
-            case 2:
-                adaugareInFisier(fisier_activ);
+            case 3:
+                if (checkIfFileIsActive(fisier_activ)) {
+                    adaugareInFisier(fisier_activ);
+                } else {
+                    printf("\nSelectati un fisier!");
+                }
                 break;
 
             case 0:
                 loop_is_running = 0;
+                break;
+
+            case -2:
+                printf("JSON!");
                 break;
 
             default:
