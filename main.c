@@ -148,6 +148,13 @@ void modifyFile(const char path[]) {
     }
 }
 
+void exporteazaInJSON(const char path[]) {
+    struct Node *last = NULL;
+    citireFisier(path, &last);
+    if (last == NULL){ return; }
+    exportToJSON(last);
+}
+
 int main() {
     // Datele initiale
     struct Node *last = NULL;
@@ -216,7 +223,12 @@ int main() {
                 break;
 
             case -2:
-                printf("JSON!");
+                if (printRegisteredFiles() > 0) {
+                    printf("\n");
+                    exporteazaInJSON(fisier_activ);
+                } else {
+                    printf("Inca nu exista fisiere cu date!\n");
+                }
                 break;
 
             default:
