@@ -103,7 +103,6 @@ struct Node *ultimulElement(struct Node *last)
 }
 void sterge(struct Node** head, marfa_t data)
 {
-
     if (*head == NULL)
         return;
 
@@ -153,6 +152,7 @@ void curataLista(struct Node** head_ref) {
 void traversarea(struct Node *last)
 {
     struct Node *p = NULL;
+    int counter = 0;
 
     // Daca lista este pustie, intoarce
     if (last == NULL)
@@ -166,7 +166,8 @@ void traversarea(struct Node *last)
 
     // Traversarea listei
     do {
-        printf("%d | %s\n", p->data.cod, p->data.denumire);
+        printf("\n%d) Cod: %d | Denumire: \"%s\" | Articol: \"%s\" | Model: \"%s\" | Marime: \"%s\" | Calitate: \"%s\" | Pret: %f",
+               counter++, p->data.cod, p->data.denumire, p->data.articol, p->data.model, p->data.marime, p->data.calitate, p->data.pret);
         p = p -> next;
     } while(p != last);
 }
@@ -176,6 +177,31 @@ void afisareaDatelor(const marfa_t data)
     printf("Cod: %d | Denumire: \"%s\" | Articol: \"%s\" | Model: \"%s\" | Marime: \"%s\" | Calitate: \"%s\" | Pret: %f",
             data.cod, data.denumire, data.articol, data.model, data.marime, data.calitate, data.pret);
     printf("\n———————————\n");
+}
+marfa_t selecteazaDupaIndex(const struct Node* last, int index)
+{
+    struct Node *p = NULL;
+    marfa_t empty_response = {};
+    int counter = 0;
+
+    // Daca lista este pustie, intoarce
+    if (last == NULL)
+    {
+        printf("Lista este pustie!.\n");
+        return empty_response;
+    }
+
+    // Selectia primului nod
+    p = last;
+
+    // Traversarea listei
+    do {
+        if (index == counter++) {
+            return p->data;
+        }
+        p = p -> next;
+    } while(p != last);
+    return empty_response;
 }
 
 // Exportul / importul datelor
@@ -345,7 +371,7 @@ void creareFisier(const char path[], struct Node *last) {
 }
 void citireFisier(const char path[], struct Node **last) {
     FILE *fp;
-    fp = fopen(path, "a+");
+    fp = fopen(path, "r");
     *last = readFile(fp);
     fclose(fp);
 }

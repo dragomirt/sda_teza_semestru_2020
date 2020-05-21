@@ -86,7 +86,7 @@ void cautareInFisier(const char path[]) {
 }
 char* creareFisierNou() {
     char nume_fisier[MAX_STRING_SIZE];
-    printf("\nDenumire fisier (calea absoluta):");
+    printf("\nDenumire fisier (calea absoluta): ");
     scanf("%s", nume_fisier);
 
     if (strcmp(nume_fisier, "") > 0) {
@@ -97,6 +97,55 @@ char* creareFisierNou() {
 
     printf("Introduceti denumirea fisierului!");
     return "";
+}
+void modifyFile(const char path[]) {
+    int index = 0;
+    struct Node *last= NULL;
+    marfa_t data;
+    citireFisier(path, &last);
+
+    if (last == NULL) {
+        printf("Nu exista elemente in lista!");
+        return;
+    }
+    traversarea(last);
+    printf("-1) Iesire");
+
+    printf("\nSelectati instanta ce trebuie modificata: ");
+    scanf("%d", &index);
+
+    if (index == -1) {
+        return;
+    }
+    data = selecteazaDupaIndex(last, index);
+//
+//    if (!data.cod) {
+//        return;
+//    }
+
+    printf("\nSelectati actiunea:"
+           "\n1) Rescriere"
+           "\n2) Stergere"
+           "\n0) Inapoi"
+           "\nSelectati: ");
+    scanf("%d", &index);
+
+    switch (index) {
+        case 1:
+            sterge(&last, data);
+            creareFisier(path, last);
+            adaugareInFisier(path);
+            break;
+
+        case 2:
+            sterge(&last, data);
+            creareFisier(path, last);
+            break;
+
+        default:
+            return;
+            break;
+    }
 }
 
 int main() {
@@ -117,6 +166,7 @@ int main() {
                "\n2) Crearea fisier"
                "\n3) Adaugarea in fisierul activ"
                "\n4) Cautarea instantei in fisierul activ"
+               "\n5) Modificati fisierul activ"
                "\n-2) BONUS: Exportarea in JSON"
                "\n0) Iesire din program"
                "\nNavigati: ");
@@ -148,6 +198,14 @@ int main() {
             case 4:
                 if (checkIfFileIsActive(fisier_activ)) {
                     cautareInFisier(fisier_activ);
+                } else {
+                    printf("\nSelectati un fisier!");
+                }
+                break;
+
+            case 5:
+                if (checkIfFileIsActive(fisier_activ)) {
+                    modifyFile(fisier_activ);
                 } else {
                     printf("\nSelectati un fisier!");
                 }

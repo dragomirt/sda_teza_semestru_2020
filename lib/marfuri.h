@@ -26,6 +26,7 @@ void sterge(struct Node** head, marfa_t data);
 void curataLista(struct Node** head_ref);
 void traversarea(struct Node *last);
 void afisareaDatelor(const marfa_t data);
+marfa_t selecteazaDupaIndex(const struct Node* last, int index);
 
 void exportToJSON(struct Node *last);
 void createRegisterFile();
