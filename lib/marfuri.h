@@ -15,10 +15,10 @@ void traversarea(struct Node *last);
 
 void exportToJSON(struct Node *last);
 
-void printRegisteredFiles();
+int printRegisteredFiles();
 void creareFisier(const char path[], struct Node *last);
 void citireFisier(const char path[], struct Node **last);
-void readFileFromRegister(struct Node** last, int register_index);
+char* readFileFromRegister(struct Node** last, int register_index);
 
 void sort(struct Node **start, int type);
 struct Node *searchByCode(const struct Node *last, const int code);

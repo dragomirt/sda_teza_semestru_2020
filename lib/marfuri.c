@@ -306,19 +306,21 @@ void removeFromRegister(const char path[]) {
         remove("temp.txt");
     }
 }
-void printRegisteredFiles() {
+int printRegisteredFiles() {
     FILE *fp;
     fp = fopen(REGISTER_NAME, "r");
     char file_name[MAX_STRING_SIZE];
+    int index = 0;
 
-    do
+    while(!feof(fp))
     {
         fscanf(fp, "%s\n", file_name);
-        printf("%s\n", file_name);
+        printf("%d) %s\n", index, file_name);
+        index++;
     }
-    while(!feof(fp));
 
     fclose(fp);
+    return index;
 }
 
 // Metode de manipulare a fisierelor
@@ -337,7 +339,7 @@ void citireFisier(const char path[], struct Node **last) {
     *last = readFile(fp);
     fclose(fp);
 }
-void readFileFromRegister(struct Node** last, int register_index) {
+char* readFileFromRegister(struct Node** last, int register_index) {
     FILE *fp;
     fp = fopen(REGISTER_NAME, "r");
     char file_name[MAX_STRING_SIZE];
@@ -354,6 +356,7 @@ void readFileFromRegister(struct Node** last, int register_index) {
     while(!feof(fp));
 
     fclose(fp);
+    return file_name;
 }
 
 // Metode ajutatoare
