@@ -109,7 +109,7 @@ void modifyFile(const char path[]) {
         return;
     }
     traversarea(last);
-    printf("-1) Iesire");
+    printf("\n-1) Iesire");
 
     printf("\nSelectati instanta ce trebuie modificata: ");
     scanf("%d", &index);
