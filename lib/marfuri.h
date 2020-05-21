@@ -25,6 +25,7 @@ struct Node *adaugaDupa(struct Node *last, marfa_t data, marfa_t item);
 void sterge(struct Node** head, marfa_t data);
 void curataLista(struct Node** head_ref);
 void traversarea(struct Node *last);
+void afisareaDatelor(const marfa_t data);
 
 void exportToJSON(struct Node *last);
 

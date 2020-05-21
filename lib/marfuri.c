@@ -170,6 +170,13 @@ void traversarea(struct Node *last)
         p = p -> next;
     } while(p != last);
 }
+void afisareaDatelor(const marfa_t data)
+{
+    printf("\n———————————\n");
+    printf("Cod: %d | Denumire: \"%s\" | Articol: \"%s\" | Model: \"%s\" | Marime: \"%s\" | Calitate: \"%s\" | Pret: %f",
+            data.cod, data.denumire, data.articol, data.model, data.marime, data.calitate, data.pret);
+    printf("\n———————————\n");
+}
 
 // Exportul / importul datelor
 void exportToJSON(struct Node *last) {

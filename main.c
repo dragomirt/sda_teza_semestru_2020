@@ -13,7 +13,6 @@ char* citireInformatieDinFisier(struct Node** last) {
     scanf("%d", &index);
     return readFileFromRegister(last, index);
 }
-
 void adaugareInFisier(const char path[]) {
     marfa_t marfa_test;
     struct Node* last = NULL;
@@ -38,13 +37,53 @@ void adaugareInFisier(const char path[]) {
     printf("\nInstanta cu codul %d si numele \"%s\" a fost inserat cu succes in fisierul \"%s\"!\n", marfa_test.cod, marfa_test.denumire, path);
     printf("——————————————————");
 }
-
 int checkIfFileIsActive(const char path[]) {
     if (!strcmp(path, "")) {
         return 0;
     }
 
     return 1;
+}
+
+void cautareInFisier(const char path[]) {
+    int index = 0;
+    int code = 0;
+    char denumire[MAX_STRING_SIZE];
+    struct Node *last= NULL;
+    struct Node *element= NULL;
+
+    citireFisier(path, &last);
+
+    printf("\nSelectati tipul de cautare:"
+           "\n1) Dupa cod"
+           "\n2) Dupa denumire"
+           "\n0) Inapoi"
+           "\nSelectati: ");
+    scanf("%d", &index);
+
+    switch (index) {
+        case 1:
+            printf("\nCodul de cautare: ");
+            scanf("%d", &code);
+            element = searchByCode(last, code);
+            if (element) {
+                afisareaDatelor((*element).data);
+            }
+            break;
+
+        case 2:
+            printf("\nDenmirea de cautare: ");
+            scanf("%s", &denumire);
+            element = searchByDenumire(last, denumire);
+            if (element) {
+                afisareaDatelor((*element).data);
+            }
+            break;
+
+        default:
+            return;
+            break;
+    }
 }
 
 int main() {
@@ -64,6 +103,7 @@ int main() {
                "\n1) Selectare fisier activ"
                "\n2) Crearea fisier"
                "\n3) Adaugarea in fisierul activ"
+               "\n4) Cautarea instantei in fisierul activ"
                "\n-2) BONUS: Exportarea in JSON"
                "\n0) Iesire din program"
                "\nNavigati: ");
@@ -83,6 +123,14 @@ int main() {
             case 3:
                 if (checkIfFileIsActive(fisier_activ)) {
                     adaugareInFisier(fisier_activ);
+                } else {
+                    printf("\nSelectati un fisier!");
+                }
+                break;
+
+            case 4:
+                if (checkIfFileIsActive(fisier_activ)) {
+                    cautareInFisier(fisier_activ);
                 } else {
                     printf("\nSelectati un fisier!");
                 }
