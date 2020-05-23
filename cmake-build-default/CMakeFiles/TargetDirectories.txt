@@ -1,0 +1,4 @@
+/Users/dragomirturcanu/workspace/uni/teza_semestru_sda/cmake-build-default/CMakeFiles/rebuild_cache.dir
+/Users/dragomirturcanu/workspace/uni/teza_semestru_sda/cmake-build-default/CMakeFiles/edit_cache.dir
+/Users/dragomirturcanu/workspace/uni/teza_semestru_sda/cmake-build-default/CMakeFiles/teza_semestru_sda.dir
+/Users/dragomirturcanu/workspace/uni/teza_semestru_sda/cmake-build-default/CMakeFiles/marfuri_lib.dir

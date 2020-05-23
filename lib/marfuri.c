@@ -17,11 +17,13 @@ struct Node *adaugaListaPustie(struct Node *last, marfa_t data)
             (struct Node*)malloc(sizeof(struct Node));
 
     // Atribuirea marfei
-    temp -> data = data;
-    last = temp;
+    if (temp != NULL) {
+        temp->data = data;
+        last = temp;
 
-    // Crearea legaturii
-    last -> next = last;
+        // Crearea legaturii
+        last->next = last;
+    }
 
     return last;
 }
@@ -33,9 +35,11 @@ struct Node *adaugaLaInceput(struct Node *last, marfa_t data)
     struct Node *temp =
             (struct Node *)malloc(sizeof(struct Node));
 
-    temp -> data = data;
-    temp -> next = last -> next;
-    last -> next = temp;
+    if (temp != NULL) {
+        temp->data = data;
+        temp->next = last->next;
+        last->next = temp;
+    }
 
     return last;
 }
@@ -47,10 +51,12 @@ struct Node *adaugaLaSfarsit(struct Node *last, marfa_t data)
     struct Node *temp =
             (struct Node *)malloc(sizeof(struct Node));
 
-    temp -> data = data;
-    temp -> next = last -> next;
-    last -> next = temp;
-    last = temp;
+    if (temp != NULL) {
+        temp->data = data;
+        temp->next = last->next;
+        last->next = temp;
+        last = temp;
+    }
 
     return last;
 }
@@ -66,12 +72,16 @@ struct Node *adaugaDupa(struct Node *last, marfa_t data, marfa_t item)
         if ((p ->data).cod == item.cod)
         {
             temp = (struct Node *)malloc(sizeof(struct Node));
-            temp -> data = data;
-            temp -> next = p -> next;
-            p -> next = temp;
 
-            if (p == last)
-                last = temp;
+            if (temp != NULL) {
+                temp->data = data;
+                temp->next = p->next;
+                p->next = temp;
+
+                if (p == last)
+                    last = temp;
+            }
+
             return last;
         }
         p = p -> next;
@@ -103,8 +113,10 @@ struct Node *ultimulElement(struct Node *last)
 }
 void sterge(struct Node** head, marfa_t data)
 {
-    if (*head == NULL)
+
+    if (head == NULL || *head == NULL) {
         return;
+    }
 
     if((*head)->data.cod == data.cod && (*head)->next==*head)
     {
@@ -112,29 +124,31 @@ void sterge(struct Node** head, marfa_t data)
         *head=NULL;
     }
 
-    struct Node *last=*head,*d;
+    struct Node* last = *head, *d = *head;
 
-    if((*head)->data.cod==data.cod) {
+    if (*head != NULL) {
+        if ((*head)->data.cod == data.cod) {
 
-        while(last->next!=*head)
-            last=last->next;
+            while (last->next != *head)
+                last = last->next;
 
-        last->next=(*head)->next;
-        free(*head);
-        *head=last->next;
+            last->next = (*head)->next;
+            *head = last->next;
+        }
+
+        while (last->next != *head && last->next->data.cod != data.cod) {
+            last = last->next;
+        }
+
+        if (last->next->data.cod == data.cod) {
+            d = last->next;
+            last->next = d->next;
+            free(d);
+        }
+        else
+            printf("Intrarea nu a fost gasita!");
+
     }
-
-    while(last->next!=*head && last->next->data.cod!=data.cod) {
-        last=last->next;
-    }
-
-    if(last->next->data.cod == data.cod) {
-        d=last->next;
-        last->next=d->next;
-        free(d);
-    }
-    else
-        printf("Intrarea nu a fost gasita!");
 }
 void curataLista(struct Node** head_ref) {
     struct Node* current = *head_ref;
@@ -173,15 +187,15 @@ void traversarea(struct Node *last)
 }
 void afisareaDatelor(const marfa_t data)
 {
-    printf("\n———————————\n");
+    printf("\n----------------------------------\n");
     printf("Cod: %d | Denumire: \"%s\" | Articol: \"%s\" | Model: \"%s\" | Marime: \"%s\" | Calitate: \"%s\" | Pret: %f",
-            data.cod, data.denumire, data.articol, data.model, data.marime, data.calitate, data.pret);
-    printf("\n———————————\n");
+           data.cod, data.denumire, data.articol, data.model, data.marime, data.calitate, data.pret);
+    printf("\n----------------------------------\n");
 }
 marfa_t selecteazaDupaIndex(const struct Node* last, int index)
 {
     struct Node *p = NULL;
-    marfa_t empty_response = {};
+    marfa_t empty_response = {"", "", "", "", "", 0, -1 };
     int counter = 0;
 
     // Daca lista este pustie, intoarce
@@ -262,16 +276,18 @@ void exportToFile(FILE *fp, struct Node *last) {
     } while(p != last);
 }
 struct Node *readFile(FILE *fp) {
-    marfa_t mo; // Marfa Object
+    marfa_t mo = {"", "", "", "", "", 0, -1 }; // Marfa Object
     struct Node *p = NULL;
 
     // Citirea fisierului
-    do
+    while(!feof(fp))
     {
-        fscanf(fp, "%d %s %s %s %s %s %f\n", &mo.cod, mo.denumire, mo.articol, mo.model, mo.marime, mo.calitate, &mo.pret);
-        p = adaugaLaInceput(p, mo);
-    }
-    while(!feof(fp));
+        if (fscanf(fp, "%d %s %s %s %s %s %f\n", &mo.cod, mo.denumire, mo.articol, mo.model, mo.marime, mo.calitate, &mo.pret)) {
+            if (mo.cod > -1) {
+                p = adaugaLaInceput(p, mo);
+            }
+        }
+    };
 
     return p;
 }
@@ -285,15 +301,16 @@ void createRegisterFile() {
 int checkIfInRegister(const char path[]) {
     FILE *fp;
     fp = fopen(REGISTER_NAME, "r");
-    char file_name[MAX_STRING_SIZE];
+    char file_name[MAX_STRING_SIZE] = "";
 
     do
     {
-        fscanf(fp, "%s\n", file_name);
-        if (!strcmp(file_name, path)) {
-            fclose(fp);
+        if (fscanf(fp, "%s\n", file_name)) {
+            if (!strcmp(file_name, path)) {
+                fclose(fp);
 
-            return 1;
+                return 1;
+            }
         }
     }
     while(!feof(fp));
@@ -312,17 +329,17 @@ void addToRegister(const char path[]) {
 void removeFromRegister(const char path[]) {
     if (checkIfInRegister(path)) {
         FILE *fp, *temp;
-        char data[MAX_STRING_SIZE];
+        char data[MAX_STRING_SIZE] = "";
         fp = fopen(REGISTER_NAME, "r");
         temp = fopen("temp.txt", "w+");
 
         do
         {
-            fscanf(fp, "%s\n", data);
-
-            if (strcmp(data, path) != 0) {
-                fprintf(temp, "%s\n", data);
-            }
+            if (fscanf(fp, "%s\n", data)) {
+                if (strcmp(data, path) != 0) {
+                    fprintf(temp, "%s\n", data);
+                }
+            };
         }
         while(!feof(fp));
 
@@ -331,8 +348,9 @@ void removeFromRegister(const char path[]) {
 
         do
         {
-            fscanf(temp, "%s\n", data);
-            fprintf(fp, "%s\n", data);
+            if (fscanf(temp, "%s\n", data)) {
+                fprintf(fp, "%s\n", data);
+            };
         }
         while(!feof(temp));
 
@@ -345,35 +363,45 @@ void removeFromRegister(const char path[]) {
 int printRegisteredFiles() {
     FILE *fp;
     fp = fopen(REGISTER_NAME, "r");
-    char file_name[MAX_STRING_SIZE];
-    int index = 0;
 
-    while(!feof(fp))
-    {
-        fscanf(fp, "%s\n", file_name);
-        printf("%d) %s\n", index, file_name);
-        index++;
+    if (fp != NULL) {
+        char file_name[MAX_STRING_SIZE] = "";
+        int index = 0;
+
+        while(!feof(fp))
+        {
+            if (fscanf(fp, "%s\n", file_name)) {
+                printf("%d) %s\n", index, file_name);
+            };
+            index++;
+        }
+
+        fclose(fp);
+        return index;
     }
-
-    fclose(fp);
-    return index;
+    return 0;
 }
 
 // Metode de manipulare a fisierelor
 void creareFisier(const char path[], struct Node *last) {
     FILE *fp;
     fp = fopen(path, "w+");
-    exportToFile(fp, last);
-    fclose(fp);
 
-    createRegisterFile();
-    addToRegister(path);
+    if (fp != NULL) {
+        exportToFile(fp, last);
+        fclose(fp);
+
+        createRegisterFile();
+        addToRegister(path);
+    }
 }
 void citireFisier(const char path[], struct Node **last) {
     FILE *fp;
     fp = fopen(path, "r");
-    *last = readFile(fp);
-    fclose(fp);
+    if (fp != NULL) {
+        *last = readFile(fp);
+        fclose(fp);
+    }
 }
 char* readFileFromRegister(struct Node** last, int register_index) {
     FILE *fp;
@@ -383,11 +411,12 @@ char* readFileFromRegister(struct Node** last, int register_index) {
 
     do
     {
-        fscanf(fp, "%s\n", file_name);
-        if (counter == register_index) {
-            citireFisier(file_name, last);
-            break;
-        }
+        if (fscanf(fp, "%s\n", file_name)) {
+            if (counter == register_index) {
+                citireFisier(file_name, last);
+                break;
+            }
+        };
         counter++;
     }
     while(!feof(fp));
@@ -450,7 +479,7 @@ void sort(struct Node **start, int type)
     struct Node *lptr = NULL;
 
     /* Checking for empty list */
-    if (start == NULL)
+    if (start == NULL || *start == NULL)
         return;
 
     struct Node *temp = NULL;
@@ -552,9 +581,12 @@ int getLastIndex(const char path[]) {
     struct Node *last = NULL;
 
     citireFisier(path, &last);
-    sort(&last, 0);
-    if (ultimulElement(last) != NULL) {
-        return ultimulElement(last)->data.cod;
+
+    if (last != NULL) {
+        sort(&last, 0);
+        if (ultimulElement(last) != NULL) {
+            return ultimulElement(last)->data.cod;
+        }
     }
 
     return -1;

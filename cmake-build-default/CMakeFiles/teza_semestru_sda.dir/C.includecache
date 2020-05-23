@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/dragomirturcanu/workspace/uni/teza_semestru_sda/lib/marfuri.h
+
+/Users/dragomirturcanu/workspace/uni/teza_semestru_sda/main.c
+stdio.h
+-
+lib/marfuri.h
+/Users/dragomirturcanu/workspace/uni/teza_semestru_sda/lib/marfuri.h
+string.h
+-
+
