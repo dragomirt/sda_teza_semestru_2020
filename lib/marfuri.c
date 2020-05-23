@@ -322,8 +322,10 @@ void addToRegister(const char path[]) {
     if (!checkIfInRegister(path)) {
         FILE *fp;
         fp = fopen(REGISTER_NAME, "a+");
-        fprintf(fp, "%s\n", path);
-        fclose(fp);
+        if (fp != NULL) {
+            fprintf(fp, "%s\n", path);
+            fclose(fp);
+        }
     }
 }
 void removeFromRegister(const char path[]) {
@@ -371,7 +373,9 @@ int printRegisteredFiles() {
         while(!feof(fp))
         {
             if (fscanf(fp, "%s\n", file_name)) {
-                printf("%d) %s\n", index, file_name);
+                if (strcmp(file_name, "") > 0) {
+                    printf("%d) %s\n", index, file_name);
+                }
             };
             index++;
         }

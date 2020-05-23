@@ -50,7 +50,7 @@ void adaugareInFisier(const char path[]) {
     marfa_test.cod = getLastIndex(path) + 1;
 
     citireFisier(path, &last);
-    adaugaLaInceput(last, marfa_test);
+    last = adaugaLaInceput(last, marfa_test);
     sort(&last, 0);
     creareFisier(path, last);
 
