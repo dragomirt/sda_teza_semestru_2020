@@ -18,7 +18,6 @@ struct Node {
     struct Node *next;
 };
 
-//void hello(void);
 struct Node *adaugaLaInceput(struct Node *last, marfa_t data);
 struct Node *adaugaLaSfarsit(struct Node *last, marfa_t data);
 struct Node *adaugaDupa(struct Node *last, marfa_t data, marfa_t item);

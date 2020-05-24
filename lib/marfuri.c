@@ -282,8 +282,11 @@ struct Node *readFile(FILE *fp) {
     // Citirea fisierului
     while(!feof(fp))
     {
+        // Daca datele au fost atribuite cu success
         if (fscanf(fp, "%d %s %s %s %s %s %f\n", &mo.cod, mo.denumire, mo.articol, mo.model, mo.marime, mo.calitate, &mo.pret)) {
+            // Si codul productului nu este NULL si mai mare ca -1
             if (mo.cod > -1) {
+                // Elementul este adaugat la lista de produse
                 p = adaugaLaInceput(p, mo);
             }
         }
@@ -399,10 +402,15 @@ void creareFisier(const char path[], struct Node *last) {
         addToRegister(path);
     }
 }
+// Citirea fisierului
 void citireFisier(const char path[], struct Node **last) {
     FILE *fp;
+    // Deschiderea fisierului pentur citire
     fp = fopen(path, "r");
+
+    // In caz ca fisierul exista, executa mai departe
     if (fp != NULL) {
+        // Atribuirea fisierului la respunsul functiei readfile
         *last = readFile(fp);
         fclose(fp);
     }
@@ -594,20 +602,4 @@ int getLastIndex(const char path[]) {
     }
 
     return -1;
-}
-
-void hello(void) {
-    struct Node *last = NULL;
-
-    citireFisier("testdata.txt", &last);
-    sort(&last, 2);
-
-    creareFisier("testdata.txt", last);
-
-    struct Node *p = searchByDenumire(last, "dhdf1");
-    if (p) {
-        printf("%d", p->data.cod);
-    }
-
-    traversarea(last);
 }
