@@ -7,9 +7,11 @@
 
 #define MAX_STRING_SIZE 200
 
+// Citirea datelor din fisier pe baza numarului sau de ordine in fisierul registru
 char* citireInformatieDinFisier(struct Node** last) {
     int index = 0;
     printf("Selectati fisierul activ: ");
+
     if (scanf("%d", &index)) {
         return readFileFromRegister(last, index);
     };
@@ -19,6 +21,7 @@ void adaugareInFisier(const char path[]) {
     marfa_t marfa_test;
     struct Node* last = NULL;
 
+    // Prompt-ul de intrare a datelor
     printf("----------------------------------");
     printf("\nInstanta noua de marfa textila:");
     printf("\nDenumire: ");
@@ -49,14 +52,18 @@ void adaugareInFisier(const char path[]) {
     // Incrementarea ultimului index gasit in fisier:
     marfa_test.cod = getLastIndex(path) + 1;
 
+    // Atribuirea la variabila locala de lista datele din fisier
     citireFisier(path, &last);
     last = adaugaLaInceput(last, marfa_test);
     sort(&last, 0);
+
+    // Inscrierea datelor modificate in fisier
     creareFisier(path, last);
 
     printf("\nInstanta cu codul %d si numele \"%s\" a fost inserat cu succes in fisierul \"%s\"!\n", marfa_test.cod, marfa_test.denumire, path);
     printf("----------------------------------");
 }
+// Controleaza daca este setat fisierul activ
 int checkIfFileIsActive(const char path[]) {
     if (!strcmp(path, "")) {
         return 0;
@@ -140,10 +147,6 @@ void modifyFile(const char path[]) {
             return;
         }
         data = selecteazaDupaIndex(last, index);
-        //
-        //    if (!data.cod) {
-        //        return;
-        //    }
 
         printf("\nSelectati actiunea:"
                "\n1) Rescriere"
@@ -171,6 +174,43 @@ void modifyFile(const char path[]) {
     };
 }
 
+void sortFile(const char path[]) {
+    struct Node *last = NULL;
+    int index = 0;
+    citireFisier(path, &last);
+    if (last == NULL){ return; }
+
+    printf("\nSelectati tipul de sortare:"
+           "\n1) Dupa cod"
+           "\n2) Dupa denumire"
+           "\n2) Dupa articol"
+           "\n0) Inapoi"
+           "\nSelectati: ");
+    if (scanf("%d", &index)) {
+        switch (index) {
+            case 1:
+                sort(&last, 0);
+                break;
+
+            case 2:
+                printf("\nDenmirea de cautare: ");
+                sort(&last, 1);
+                break;
+
+            case 3:
+                sort(&last, 2);
+                break;
+
+            default:
+                return;
+                break;
+        }
+
+        creareFisier(path, last);
+        traversarea(last);
+    };
+}
+
 void exporteazaInJSON(const char path[]) {
     struct Node *last = NULL;
     citireFisier(path, &last);
@@ -183,7 +223,6 @@ int main() {
     struct Node *last = NULL;
     char fisier_activ[MAX_STRING_SIZE] = "";
 
-    // Meniu
     int input_value;
     int loop_is_running = 1;
 
@@ -194,9 +233,10 @@ int main() {
         printf(""
                "\n1) Selectare fisier activ"
                "\n2) Crearea fisier"
-               "\n3) Adaugarea in fisierul activ"
-               "\n4) Cautarea instantei in fisierul activ"
-               "\n5) Modificati fisierul activ"
+               "\n3) Adaugare"
+               "\n4) Cautare"
+               "\n5) Modificare"
+               "\n6) Sortare"
                "\n-2) BONUS: Exportarea in JSON"
                "\n0) Iesire din program"
                "\nNavigati: ");
@@ -238,6 +278,15 @@ int main() {
                 case 5:
                     if (checkIfFileIsActive(fisier_activ)) {
                         modifyFile(fisier_activ);
+                    }
+                    else {
+                        printf("\nSelectati un fisier!");
+                    }
+                    break;
+
+                case 6:
+                    if (checkIfFileIsActive(fisier_activ)) {
+                        sortFile(fisier_activ);
                     }
                     else {
                         printf("\nSelectati un fisier!");

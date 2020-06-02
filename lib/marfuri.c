@@ -29,12 +29,15 @@ struct Node *adaugaListaPustie(struct Node *last, marfa_t data)
 }
 struct Node *adaugaLaInceput(struct Node *last, marfa_t data)
 {
+    // In cazul in care lista e pustie, se creaza una noua
     if (last == NULL)
         return adaugaListaPustie(last, data);
 
+    // Alocarea memoriei spre nod
     struct Node *temp =
             (struct Node *)malloc(sizeof(struct Node));
 
+    // Daca nodul este creat, atribuie datele si adauga adresa acestuia la inceputul listei din parametru
     if (temp != NULL) {
         temp->data = data;
         temp->next = last->next;
@@ -45,12 +48,15 @@ struct Node *adaugaLaInceput(struct Node *last, marfa_t data)
 }
 struct Node *adaugaLaSfarsit(struct Node *last, marfa_t data)
 {
+    // In cazul in care lista e pustie, se creaza una noua
     if (last == NULL)
         return adaugaListaPustie(last, data);
 
+    // Alocarea memoriei spre nod
     struct Node *temp =
             (struct Node *)malloc(sizeof(struct Node));
 
+    // Daca nodul este creat, atribuie datele si adauga adresa acestuia la sfarsitul listei din parametru
     if (temp != NULL) {
         temp->data = data;
         temp->next = last->next;
@@ -62,6 +68,8 @@ struct Node *adaugaLaSfarsit(struct Node *last, marfa_t data)
 }
 struct Node *adaugaDupa(struct Node *last, marfa_t data, marfa_t item)
 {
+
+    // In cazul in care lista e pustie, se intoarce o structura nula
     if (last == NULL)
         return NULL;
 
@@ -69,6 +77,7 @@ struct Node *adaugaDupa(struct Node *last, marfa_t data, marfa_t item)
     p = last -> next;
     do
     {
+        // Daca nodul temporar contine date identice cu cele cautate, se adauga un nod nou dupa acesta
         if ((p ->data).cod == item.cod)
         {
             temp = (struct Node *)malloc(sizeof(struct Node));
@@ -114,10 +123,12 @@ struct Node *ultimulElement(struct Node *last)
 void sterge(struct Node** head, marfa_t data)
 {
 
+    // Controleaza daca adresa si adresa adresei exista
     if (head == NULL || *head == NULL) {
         return;
     }
 
+    // Daca primul element este cel cautat, sterge nodul
     if((*head)->data.cod == data.cod && (*head)->next==*head)
     {
         free(*head);
@@ -154,6 +165,7 @@ void curataLista(struct Node** head_ref) {
     struct Node* current = *head_ref;
     struct Node* next;
 
+    // Dealocarea memoriei tuturor elementelor din lista
     while (current != *head_ref)
     {
         next = current->next;
@@ -514,7 +526,7 @@ void sort(struct Node **start, int type)
                     break;
 
                 case 2:
-                    if (strcmp(ptr1->data.model, ptr1->next->data.model) > 0)
+                    if (strcmp(ptr1->data.articol, ptr1->next->data.articol) > 0)
                     {
                         swap(ptr1, ptr1->next);
                         swapped = 1;
